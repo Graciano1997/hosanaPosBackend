@@ -1,0 +1,185 @@
+---
+openapi: 3.0.1
+info:
+  title: Sale System System Wizard API
+  version: v1
+security:
+  - bearerAuth: []
+paths:
+  "/api/products":
+    get:
+      summary: List product
+      responses:
+        '200':
+          description: product fetched
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                    password:
+                      type: string
+                  required:
+                    - username
+                    - password
+              required:
+                - user
+    patch:
+      summary: update product
+      responses:
+        '201':
+          description: product updated
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                    password:
+                      type: string
+                  required:
+                    - username
+                    - password
+              required:
+                - user
+    post:
+      summary: create product
+      responses:
+        '201':
+          description: product criated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                    password:
+                      type: string
+                  required:
+                    - username
+                    - password
+              required:
+                - user
+    delete:
+      summary: delete product
+      responses:
+        '201':
+          description: product deleted
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                    password:
+                      type: string
+                  required:
+                    - username
+                    - password
+              required:
+                - user
+  "/api/categories":
+    post:
+      summary: Create Category item
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+
+  "/api/products":
+    get:
+      summary: list products
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create product
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                picture:
+                  type: string
+                speciality:
+                  type: string
+                address:
+                  type: string
+              required:
+                - name
+                - picture
+                - speciality
+                - address
+  "/api/products/{id}":
+    parameters:
+      - name: id
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      summary: show product item
+      responses:
+        '200':
+          description: successful
+    delete:
+      summary: delete product
+      responses:
+        '200':
+          description: successful
+servers:
+  - url: https://{defaultHost}
+    variables:
+      defaultHost:
+        default: localhost
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

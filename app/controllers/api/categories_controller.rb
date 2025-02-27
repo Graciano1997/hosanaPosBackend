@@ -7,7 +7,7 @@ class Api::CategoriesController < ApplicationController
   end
 
   def show
-    render json: { success: true, data: @category }, status: :ok
+    render json: { success: true, data: display_category(@category) }, status: :ok
   end
 
   def create
@@ -16,7 +16,7 @@ class Api::CategoriesController < ApplicationController
     category.parent_category=category_father
 
     if category.save
-      render json: { success: true, category: category }, status: :ok
+      render json: { success: true, category: display_category(category) }, status: :ok
     else
       render json: { error: false, message: category.errors.full_messages }, status: :unprocessable_entity
     end
@@ -26,15 +26,7 @@ class Api::CategoriesController < ApplicationController
     category_parent = Category.find_by(id: params[:parent_category_id])
     @category.parent_category=category_parent
     if @category.update(category_params)
-      render json: { success: true, category:
-        { id: @category.id,
-        name: @category.name,
-        description: @category.description,
-        status: @category.status,
-        parent_category_id: @category.parent_category_id,
-        created_at: @category.created_at,
-        updated_at: @category.updated_at
-      } }, status: :ok
+      render json: { success: true, category: display_category(@category) }, status: :ok
     else
       render json: { error: true, message: @category.errors.full_messages }, status: :unprocessable_entity
     end
@@ -49,6 +41,19 @@ class Api::CategoriesController < ApplicationController
   end
 
   private
+
+  def display_category(category)
+    {
+      id: category.id,
+      name: category.name,
+      category: category.description,
+      status: category.status,
+      parent_category_id: category.parent_category_id,
+      parent_category: category.parent_category.name,
+      created_at: category.created_at,
+      updated_at: category.updated_at
+    }
+  end
 
   def category_params
     params.expect(category: [ :name, :description, :parent_category, :status ])

@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  AppModule: one
+  AppAction: one
+
+two:
+  AppModule: two
+  AppAction: two

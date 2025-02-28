@@ -1,4 +1,4 @@
 class AppPermition < ApplicationRecord
-  belongs_to :AppModuleAction
-  belongs_to :Profile
+  belongs_to :app_module_action
+  belongs_to :profile
 end

@@ -10,7 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 0) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_28_103105) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
   create_table "app_actions", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -18,12 +49,12 @@ ActiveRecord::Schema[8.0].define(version: 0) do
   end
 
   create_table "app_module_actions", force: :cascade do |t|
-    t.integer "AppModule_id", null: false
-    t.integer "AppAction_id", null: false
+    t.bigint "app_module_id", null: false
+    t.bigint "app_action_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["AppAction_id"], name: "index_app_module_actions_on_AppAction_id"
-    t.index ["AppModule_id"], name: "index_app_module_actions_on_AppModule_id"
+    t.index ["app_action_id"], name: "index_app_module_actions_on_app_action_id"
+    t.index ["app_module_id"], name: "index_app_module_actions_on_app_module_id"
   end
 
   create_table "app_modules", force: :cascade do |t|
@@ -33,22 +64,33 @@ ActiveRecord::Schema[8.0].define(version: 0) do
   end
 
   create_table "app_permitions", force: :cascade do |t|
-    t.integer "AppModuleAction_id", null: false
-    t.integer "Profile_id", null: false
+    t.bigint "app_module_action_id", null: false
+    t.bigint "profile_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["AppModuleAction_id"], name: "index_app_permitions_on_AppModuleAction_id"
-    t.index ["Profile_id"], name: "index_app_permitions_on_Profile_id"
+    t.index ["app_module_action_id"], name: "index_app_permitions_on_app_module_action_id"
+    t.index ["profile_id"], name: "index_app_permitions_on_profile_id"
   end
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.boolean "status"
-    t.integer "parent_category_id"
+    t.bigint "parent_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["parent_category_id"], name: "index_categories_on_parent_category_id"
+  end
+
+  create_table "clients", force: :cascade do |t|
+    t.string "name"
+    t.string "phone"
+    t.string "email"
+    t.string "address"
+    t.string "client_type"
+    t.integer "nif"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "product_configurations", force: :cascade do |t|
@@ -63,13 +105,13 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.string "name"
     t.string "code"
     t.integer "qty"
-    t.decimal "price", precision: 5, scale: 2
-    t.integer "category_id", null: false
+    t.decimal "price"
+    t.bigint "category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "expire_date"
     t.date "manufacture_date"
-    t.decimal "cost_price", precision: 5, scale: 2
+    t.decimal "cost_price"
     t.string "mesure_unit"
     t.string "brand"
     t.text "description"
@@ -93,10 +135,36 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "sale_products", force: :cascade do |t|
+    t.bigint "sale_id", null: false
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "qty"
+    t.decimal "subtotal"
+    t.index ["product_id"], name: "index_sale_products_on_product_id"
+    t.index ["sale_id"], name: "index_sale_products_on_sale_id"
+  end
+
+  create_table "sales", force: :cascade do |t|
+    t.integer "qty"
+    t.string "payment_way"
+    t.decimal "descount"
+    t.decimal "difference"
+    t.decimal "total"
+    t.bigint "client_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "received_cash"
+    t.index ["client_id"], name: "index_sales_on_client_id"
+    t.index ["user_id"], name: "index_sales_on_user_id"
+  end
+
   create_table "spents", force: :cascade do |t|
     t.text "motive"
-    t.decimal "amount", precision: 5, scale: 2
-    t.integer "user_id", null: false
+    t.decimal "amount"
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_spents_on_user_id"
@@ -107,8 +175,23 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "profile_id", null: false
+    t.bigint "profile_id", null: false
     t.boolean "active"
     t.index ["profile_id"], name: "index_users_on_profile_id"
   end
+
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "app_module_actions", "app_actions"
+  add_foreign_key "app_module_actions", "app_modules"
+  add_foreign_key "app_permitions", "app_module_actions"
+  add_foreign_key "app_permitions", "profiles"
+  add_foreign_key "categories", "categories", column: "parent_category_id"
+  add_foreign_key "products", "categories"
+  add_foreign_key "sale_products", "products"
+  add_foreign_key "sale_products", "sales"
+  add_foreign_key "sales", "clients"
+  add_foreign_key "sales", "users"
+  add_foreign_key "spents", "users"
+  add_foreign_key "users", "profiles"
 end

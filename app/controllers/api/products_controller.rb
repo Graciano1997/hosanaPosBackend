@@ -17,7 +17,7 @@ class Api::ProductsController < ApplicationController
 
   def product_fields
     product=Product.column_names
-    render json: { success: true, data: product, here: true }, status: :ok
+    render json: { success: true, data: product }, status: :ok
   end
 
   def create

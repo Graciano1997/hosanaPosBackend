@@ -11,5 +11,6 @@ Rails.application.routes.draw do
     resources :spents, default: { format: :json }
     resources :users
     resources :profiles, default: { format: :json }
+    resources :sales, default: { format: :json }
   end
 end

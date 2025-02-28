@@ -3,7 +3,13 @@ class Api::CategoriesController < ApplicationController
 
   def index
     @categories=Category.all
-    render json: { success: true, data: @categories }, status: :ok
+
+    categories=[]
+
+    @categories.each do |item|
+      categories.push(display_category(item))
+    end unless @categories.size.zero?
+    render json: { success: true, data: categories }, status: :ok
   end
 
   def show
@@ -28,7 +34,7 @@ class Api::CategoriesController < ApplicationController
     if @category.update(category_params)
       render json: { success: true, category: display_category(@category) }, status: :ok
     else
-      render json: { error: true, message: @category.errors.full_messages }, status: :unprocessable_entity
+      render json: { error: true, message: @category.errors.full_messages }, status: :ok
     end
   end
 
@@ -49,7 +55,7 @@ class Api::CategoriesController < ApplicationController
       category: category.description,
       status: category.status,
       parent_category_id: category.parent_category_id,
-      parent_category: category.parent_category.name,
+      parent_category: category.parent_category ? category.parent_category.name : "-----",
       created_at: category.created_at,
       updated_at: category.updated_at
     }

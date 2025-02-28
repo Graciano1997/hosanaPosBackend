@@ -47,7 +47,8 @@ class Api::UsersController < ApplicationController
       name: user.name,
       email: user.email,
       profile: Profile.find(user.profile_id).name,
-      active: user.active?,
+      image: user.image.attached? ?  url_for(user.image) : "none",
+      active: user.active ? true : false,
       profile_id: user.profile_id,
       created_at: user.created_at,
       updated_at: user.updated_at
@@ -55,7 +56,7 @@ class Api::UsersController < ApplicationController
   end
 
   def user_params
-     params.expect(user: [ :name, :email, :profile_id, :active, :image ])
+     params.require(:user).permit(:name, :email, :profile_id, :active, :image)
   end
 
   def set_user

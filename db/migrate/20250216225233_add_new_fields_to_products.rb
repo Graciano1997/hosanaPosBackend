@@ -1,6 +1,6 @@
 class AddNewFieldsToProducts < ActiveRecord::Migration[8.0]
   def change
-    add_column :products, :cost_price, :decimal, precision: 5, scale: 2
+    add_column :products, :cost_price, :decimal
     add_column :products, :mesure_unit, :string
     add_column :products, :brand, :string
     add_column :products, :description, :text

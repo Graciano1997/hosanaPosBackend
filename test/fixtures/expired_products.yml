@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  expired_on: 2025-03-07
+  qty: 1
+  total: 9.99
+  product: one
+
+two:
+  expired_on: 2025-03-07
+  qty: 1
+  total: 9.99
+  product: two

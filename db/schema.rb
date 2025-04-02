@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_28_103105) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_02_081436) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -93,6 +93,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_103105) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "currencies", force: :cascade do |t|
+    t.string "name"
+    t.string "symbol"
+    t.boolean "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "expired_products", force: :cascade do |t|
+    t.date "expired_on"
+    t.integer "qty"
+    t.decimal "total"
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_expired_products_on_product_id"
+  end
+
   create_table "product_configurations", force: :cascade do |t|
     t.string "field"
     t.boolean "active"
@@ -157,6 +175,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_103105) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "received_cash"
+    t.decimal "received_tpa"
     t.index ["client_id"], name: "index_sales_on_client_id"
     t.index ["user_id"], name: "index_sales_on_user_id"
   end
@@ -187,6 +206,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_103105) do
   add_foreign_key "app_permitions", "app_module_actions"
   add_foreign_key "app_permitions", "profiles"
   add_foreign_key "categories", "categories", column: "parent_category_id"
+  add_foreign_key "expired_products", "products"
   add_foreign_key "products", "categories"
   add_foreign_key "sale_products", "products"
   add_foreign_key "sale_products", "sales"

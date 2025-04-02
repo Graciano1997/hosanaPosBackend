@@ -1,6 +1,6 @@
 class Api::ProductConfigurationsController < ApplicationController
   def index
-    @productConfigurations=ProductConfiguration.all
+    @productConfigurations=ProductConfiguration.all.order(id: :asc)
     render json: { success: true, data: @productConfigurations }, status: :ok
   end
 

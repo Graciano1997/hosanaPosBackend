@@ -3,14 +3,37 @@ class Api::SpentsController < ApplicationController
 
   def index
     spents=[]
-    @spents=Spent.all
-
-
+    @spents=Spent.all.order(id: :asc)
     @spents.each do |item|
       spents.push(display_spent(item))
     end unless @spents.size.zero?
-
     render json: { success: true, data: spents }, status: :ok
+  end
+
+  def last_spents
+    spents=[]
+    @spents=Spent.order(created_at: :desc).limit(params[:number])
+    @spents.each do |item|
+      spents.push(display_spent(item))
+    end unless @spents.size.zero?
+    render json: { success: true, data: spents }, status: :ok
+  end
+
+  def min_year_date_spents
+    min_year=Spent.minimum(:created_at).year
+    if min_year
+      render json: { success: true, year: min_year }, status: :ok
+    end
+  end
+
+  def anual_spents
+    current_year = params[:year].to_i
+    monthly_total_spents=[]
+    (1..12).each do |month|
+      current_month=Date.new(current_year, month, 1)
+      monthly_total_spents << Spent.where(created_at: current_month..current_month.end_of_month).sum(:amount)
+    end
+    render json: { success: true, data: monthly_total_spents }, status: :ok
   end
 
   def show

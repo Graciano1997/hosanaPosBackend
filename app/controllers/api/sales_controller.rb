@@ -3,7 +3,7 @@ class Api::SalesController < ApplicationController
 
   def index
     sales=[]
-    @sales=Sale.all
+    @sales=Sale.all.order(id: :asc)
     @sales.each do |item|
     sales.push(display_sale(item))
     end unless @sales.size.zero?
@@ -14,6 +14,15 @@ class Api::SalesController < ApplicationController
     render json: { success: true, data: @sale }
   end
 
+  def today_balance
+    monthly_total_spents=[]
+    (1..12).each do |month|
+      current_month=Date.new(current_year, month, 1)
+      monthly_total_spents << Spent.where(created_at: current_month..current_month.end_of_month).sum(:amount)
+    end
+    render json: { success: true, data: monthly_total_spents }, status: :ok
+  end
+
   def create
     client_p=params[:client]
     sale_p=params[:sale]
@@ -21,7 +30,7 @@ class Api::SalesController < ApplicationController
 
      client = Client.new(name: client_p[:name], phone: client_p[:phone], email: client_p[:email], address: client_p[:address], client_type: client_p[:client_type], nif: client_p[:nif])
      if client.save
-        sale = Sale.new(qty: sale_p[:qty], payment_way: sale_p[:payment_way], descount: sale_p[:descount], difference: (sale_p[:received_cash].to_d - sale_p[:total].to_d), total: sale_p[:total], client_id: client.id, user_id: 1, received_cash: sale_p[:received_cash])
+        sale = Sale.new(qty: sale_p[:qty], payment_way: sale_p[:payment_way], descount: sale_p[:descount], difference: sale_p[:difference], total: sale_p[:total], client_id: client.id, user_id: 1, received_cash: sale_p[:received_cash], received_tpa: sale_p[:received_tpa])
         if sale.save
           sale_items.each do |item|
             SaleProduct.create!(sale_id: sale.id, product_id: item[:id], qty: item[:qty], subtotal: item[:total])
@@ -68,13 +77,32 @@ class Api::SalesController < ApplicationController
       descount: sale.descount,
       difference: sale.difference,
       received_cash: sale.received_cash,
+      received_tpa: sale.received_tpa,
       total: sale.total,
       client_id: sale.client_id,
       client: Client.find(sale.client_id).name,
       user_id: sale.user_id,
+      sale_products: display_sale_products(sale.sale_products),
       operator: User.find(sale.user_id).name,
       created_at: sale.created_at,
       updated_at: sale.updated_at
+    }
+  end
+
+  def display_sale_products(sale_products)
+    sale_products_items=[]
+    sale_products.each do |item|
+      sale_products_items.push(display_sale_product(item))
+    end
+    sale_products_items
+  end
+
+  def display_sale_product(sale_product)
+    {
+      code: sale_product.product.code,
+      name: sale_product.product.name,
+      qty: sale_product.qty,
+      subtotal: sale_product.subtotal
     }
   end
 end

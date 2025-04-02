@@ -1,9 +1,9 @@
 class Api::UsersController < ApplicationController
-  before_action :set_user, only: %i[ show destroy update ]
+  before_action :set_user, only: %i[ show destroy  ]
 
   def index
     users=[]
-    @users=User.all
+    @users=User.all.order(id: :asc)
     @users.each do |item|
       users.push(display_user(item))
     end unless @users.size.zero?
@@ -16,7 +16,6 @@ class Api::UsersController < ApplicationController
 
     def create
       user = User.new(user_params)
-
       if user.save
         render json: { success: true, user: display_user(user) }, status: :ok
       else
@@ -25,11 +24,11 @@ class Api::UsersController < ApplicationController
     end
 
     def update
-      if @user.update(user_params)
-        render json: { success: true, user: display_user(@user) }, status: :ok
-      else
-        render json: { error: true, message: @user.errors.full_messages }, status: :unprocessable_entity
-      end
+       if @user.update(user_params)
+          render json: { success: true, user: display_user(@user) }, status: :ok
+       else
+          render json: { error: true, message: @user.errors.full_messages }, status: :unprocessable_entity
+       end
     end
 
    def destroy

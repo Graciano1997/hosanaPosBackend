@@ -6,8 +6,6 @@ class SaleProduct < ApplicationRecord
   def decrease_product_qty
     product=Product.find(self.product_id)
 
-    product.qty -= self.qty if product.qty > 0
-
     if product.output
     product.output +=self.qty
     else

@@ -2,7 +2,7 @@ class Api::CategoriesController < ApplicationController
   before_action :set_category, only: %i[ show destroy update ]
 
   def index
-    @categories=Category.all
+    @categories=Category.all.order(id: :asc)
 
     categories=[]
 
@@ -52,7 +52,7 @@ class Api::CategoriesController < ApplicationController
     {
       id: category.id,
       name: category.name,
-      category: category.description,
+      description: category.description,
       status: category.status,
       parent_category_id: category.parent_category_id,
       parent_category: category.parent_category ? category.parent_category.name : "-----",

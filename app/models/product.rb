@@ -4,6 +4,6 @@ class Product < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :code, presence: true, uniqueness: true
   validates_numericality_of :qty
-  validates_presence_of :output
   has_many :sale_product
+  has_many :expired_product
 end

@@ -3,12 +3,11 @@ class Api::ProductsController < ApplicationController
 
   def index
     products=[]
-
-    @products=Product.all
+    @products=Product.all.order(id: :asc)
     @products.each do |item|
       products.push(display_product(item))
     end unless @products.size.zero?
-    render json: { success: true, data: products }, status: :ok
+    render json: { success: false, data: products }, status: :ok
   end
 
   def show
@@ -18,6 +17,16 @@ class Api::ProductsController < ApplicationController
   def product_fields
     product=Product.column_names
     render json: { success: true, data: product }, status: :ok
+  end
+
+  def expireds
+    products=[]
+    @products=ExpiredProduct.all
+    @products.each do |item|
+      products.push(display_product_expired(item))
+    end unless @products.size.zero?
+
+    render json: { success: true, data: products }, status: :ok
   end
 
   def create
@@ -44,6 +53,16 @@ class Api::ProductsController < ApplicationController
     else
       render json: { error: true, message: @product.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  def anual_expireds
+    current_year = params[:year].to_i
+    monthly_total_expireds=[]
+    (1..12).each do |month|
+      current_month=Date.new(current_year, month, 1)
+      monthly_total_expireds << ExpiredProduct.where(expired_on: current_month..current_month.end_of_month).sum(:total)
+    end
+    render json: { success: true, data: monthly_total_expireds }, status: :ok
   end
 
   private
@@ -85,5 +104,20 @@ class Api::ProductsController < ApplicationController
       created_at: product.created_at,
       updated_at: product.updated_at
     }
+  end
+
+  def display_product_expired(expiredProduct)
+    {
+      id: expiredProduct.id,
+      name: expiredProduct.product.name,
+      code: expiredProduct.product.code,
+      qty: expiredProduct.qty,
+      price: expiredProduct.product.price,
+      category: expiredProduct.product.category.name,
+      manufacture_date: expiredProduct.product.manufacture_date,
+      expire_on: expiredProduct.product.expire_date,
+      location_in_stock: expiredProduct.product.location_in_stock,
+      total: expiredProduct.total
+      }
   end
 end

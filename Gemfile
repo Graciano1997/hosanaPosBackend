@@ -55,3 +55,9 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 end
+
+gem "axlsx_rails"
+gem "prawn"
+gem "docx"
+gem "sidekiq-scheduler"
+gem "pos-printer", "~> 0.1.0"

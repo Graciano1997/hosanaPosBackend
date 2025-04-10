@@ -1,8 +1,7 @@
 class Api::UsersController < ApplicationController
-  before_action :set_user, only: %i[ show destroy  ]
+  before_action :set_user, only: %i[ show destroy update  ]
 
   def index
-
     users = User.order(id: :asc).map { |u| display_user(u) }
     render json: { success: true, data: users }, status: :ok
   end
@@ -21,10 +20,12 @@ class Api::UsersController < ApplicationController
     end
 
     def update
+      puts "params", params
+
        if @user.update(user_params)
-          render json: { success: true, user: display_user(@user) }, status: :ok
+            render json: { success: true, user: display_user(@user) }, status: :ok
        else
-          render json: { error: true, message: @user.errors.full_messages }, status: :unprocessable_entity
+            render json: { error: true, message: @user.errors.full_messages }, status: :unprocessable_entity
        end
     end
 
@@ -52,7 +53,7 @@ class Api::UsersController < ApplicationController
   end
 
   def user_params
-     params.require(:user).permit(:name, :email, :profile_id, :active, :image,:password)
+     params.require(:user).permit(:name, :email, :profile_id, :active, :image, :password)
   end
 
   def set_user

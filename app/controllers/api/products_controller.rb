@@ -1,4 +1,5 @@
 class Api::ProductsController < ApplicationController
+  # before_action :authorize_request
   before_action :set_product, only: %i[show update destroy]
 
   def index
@@ -55,6 +56,11 @@ class Api::ProductsController < ApplicationController
     end
   end
 
+  def expired_product_job
+    ExpiredProductsJob.perform_later
+    render json: { success:true, message: "Expired products check has been queued" }
+  end
+
   def anual_expireds
     current_year = params[:year].to_i
     monthly_total_expireds=[]
@@ -68,7 +74,7 @@ class Api::ProductsController < ApplicationController
   private
 
   def product_params
-    params.expect(product: [ :code, :name, :qty, :price, :manufacture_date, :expire_date, :category_id, :cost_price, :mesure_unit, :brand, :description, :status, :weight, :dimension, :location_in_stock, :taxes, :keyword, :observation, :promotion, :discount, :product_type ])
+    params.expect(product: [ :code,:lote, :name, :qty, :price, :manufacture_date, :expire_date, :category_id, :cost_price, :mesure_unit, :brand, :description, :status, :weight, :dimension, :location_in_stock, :taxes, :keyword, :observation, :promotion, :discount, :product_type ])
   end
 
   def set_product
@@ -81,11 +87,13 @@ class Api::ProductsController < ApplicationController
       name: product.name,
       code: product.code,
       qty: product.qty,
-      output: product.output,
+      output: product.output ? product.output : 0,
+      in_stock: product.output ? product.qty - product.output : product.qty,
       price: product.price,
       cost_price: product.cost_price,
       category: product.category.name,
       status: product.status,
+      lote: product.lote,
       category_id: product.category_id,
       brand: product.brand,
       mesure_unit: product.mesure_unit,
@@ -99,10 +107,9 @@ class Api::ProductsController < ApplicationController
       observation: product.observation,
       promotion: product.promotion,
       discount: product.discount,
-      product_type: product.product_type,
       keyword: product.keyword,
-      created_at: product.created_at,
-      updated_at: product.updated_at
+      created_at: product.created_at.utc.strftime("%d-%m-%Y %H:%M:%S"),
+      updated_at: product.updated_at.utc.strftime("%d-%m-%Y %H:%M:%S")
     }
   end
 
@@ -111,6 +118,7 @@ class Api::ProductsController < ApplicationController
       id: expiredProduct.id,
       name: expiredProduct.product.name,
       code: expiredProduct.product.code,
+      lote: expiredProduct.product.lote,
       qty: expiredProduct.qty,
       price: expiredProduct.product.price,
       category: expiredProduct.product.category.name,

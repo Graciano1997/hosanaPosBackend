@@ -56,8 +56,8 @@ class Api::CategoriesController < ApplicationController
       status: category.status,
       parent_category_id: category.parent_category_id,
       parent_category: category.parent_category ? category.parent_category.name : "-----",
-      created_at: category.created_at,
-      updated_at: category.updated_at
+      created_at: category.created_at.utc.strftime("%d-%m-%Y %H:%M:%S"),
+      updated_at: category.updated_at.utc.strftime("%d-%m-%Y %H:%M:%S")
     }
   end
 

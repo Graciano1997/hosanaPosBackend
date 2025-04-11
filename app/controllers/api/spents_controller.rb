@@ -84,8 +84,8 @@ class Api::SpentsController < ApplicationController
       user: spent.user.name,
       image: spent.user.image.attached? ? url_for(spent.user.image) : "none",
       user_id: spent.user_id,
-      created_at: spent.created_at,
-      updated_at: spent.updated_at
+      created_at: spent.created_at.utc.strftime("%d-%m-%Y %H:%M:%S"),
+      updated_at: spent.updated_at.utc.strftime("%d-%m-%Y %H:%M:%S")
     }
   end
 end

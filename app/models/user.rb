@@ -3,4 +3,5 @@ class User < ApplicationRecord
   has_one_attached :image
   belongs_to :profile
   has_many :sales
+  has_secure_password
 end

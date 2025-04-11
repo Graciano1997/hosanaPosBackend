@@ -2,11 +2,8 @@ class Api::UsersController < ApplicationController
   before_action :set_user, only: %i[ show destroy  ]
 
   def index
-    users=[]
-    @users=User.all.order(id: :asc)
-    @users.each do |item|
-      users.push(display_user(item))
-    end unless @users.size.zero?
+
+    users = User.order(id: :asc).map { |u| display_user(u) }
     render json: { success: true, data: users }, status: :ok
   end
 
@@ -49,13 +46,13 @@ class Api::UsersController < ApplicationController
       image: user.image.attached? ?  url_for(user.image) : "none",
       active: user.active ? true : false,
       profile_id: user.profile_id,
-      created_at: user.created_at,
-      updated_at: user.updated_at
+      created_at: user.created_at.utc.strftime("%d-%m-%Y %H:%M:%S"),
+      updated_at: user.updated_at.utc.strftime("%d-%m-%Y %H:%M:%S")
     }
   end
 
   def user_params
-     params.require(:user).permit(:name, :email, :profile_id, :active, :image)
+     params.require(:user).permit(:name, :email, :profile_id, :active, :image,:password)
   end
 
   def set_user

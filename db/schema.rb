@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_02_081436) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_10_082929) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -93,6 +93,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_02_081436) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "companies", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.string "phone"
+    t.string "address"
+    t.integer "nif"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "currencies", force: :cascade do |t|
     t.string "name"
     t.string "symbol"
@@ -133,7 +143,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_02_081436) do
     t.string "mesure_unit"
     t.string "brand"
     t.text "description"
-    t.string "status"
     t.decimal "weight"
     t.string "dimension"
     t.string "location_in_stock"
@@ -142,8 +151,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_02_081436) do
     t.text "observation"
     t.boolean "promotion"
     t.decimal "discount"
-    t.string "product_type"
     t.integer "output"
+    t.string "lote"
+    t.boolean "status", default: true
     t.index ["category_id"], name: "index_products_on_category_id"
   end
 
@@ -196,6 +206,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_02_081436) do
     t.datetime "updated_at", null: false
     t.bigint "profile_id", null: false
     t.boolean "active"
+    t.string "password_digest"
     t.index ["profile_id"], name: "index_users_on_profile_id"
   end
 

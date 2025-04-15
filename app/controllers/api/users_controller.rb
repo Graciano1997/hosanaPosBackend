@@ -1,10 +1,10 @@
 class Api::UsersController < ApplicationController
   before_action :set_user, only: %i[show destroy]
 
-  def index
-    users = User.order(id: :asc).map { |u| display_user(u) }
-    render json: { success: true, data: users }, status: :ok
-  end
+    def index
+      users = User.order(id: :asc).map { |u| display_user(u) }
+      render json: { success: true, data: users }, status: :ok
+    end
 
     def show
       render json: { success: true, data: display_user(@user) }, status: :ok

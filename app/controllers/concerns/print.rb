@@ -1,14 +1,12 @@
 module Print
     extend ActiveSupport::Concern
-    def generate_and_print_invoice(sale, client)
+    def generate_and_print_invoice(sale, client, invoice_type)
       @sale = sale
       @client = client
       @company = Company.first
       @products = []
       @invoice_number = "001/2025"
       @issue_date = sale[:created_at].utc.strftime("%d-%m-%Y %H:%M:%S")
-
-      puts @client
 
       sale[:sale_products].each do |item|
         @products.push({
@@ -248,17 +246,16 @@ module Print
               </div>
               <div>
               <p>Para:<h5>#{client[:name]}</h5></p>
-              <p>Endereco: Municipio de Viana, Via Expressa, Bairro Km25</p>
+              <p>Endereco: #{client[:address]}</p>
               <p>NIF: #{client[:nif]}</p>
               <p>Telefone: #{client[:phone]}</p>
               <p>Email: #{client[:email]}</p>
-              <p>Conta Corrente N. 31.1.2.1.13</p>#{'     '}
               </div>
           </div>
           <div class="invoiceType">
               <div>
                   <span>Luanda - Angola</span>
-                  <span>FATURA RECIBO</span>
+                  <span>FATURA #{invoice_type == 2 ? 'PROFORMA' : 'RECIBO'}</span>
               </div>
           </div>
     #{'  '}
@@ -415,7 +412,6 @@ module Print
              # Para Unix/Linux, use o comando lpr
              system("lpr \"#{file_path}\"")
              #  system("lpr -P \HP-Deskjet-Plus-4100-series\" \"{file_path}\"")
-             puts "enviado para imprensao"
            end
 
           # if Gem.win_platform?
@@ -426,5 +422,43 @@ module Print
           #   system("lpr \"#{file_path}\"")
           # end
           file_path
+    end
+
+    def print(sale, client)
+     invoiceObject=File.new("gfatura/fatura.json", "w")
+     products=[]
+
+     company= Company.first
+      sale[:sale_products].each do |item|
+        products.push({ nome: item[:name], qtd: item[:qty], preco: item[:price].to_s + " kz" })
+      end
+
+       invoiceObject.syswrite({
+         empresa: company.name,
+         nif: company.nif,
+         local: company.address,
+         email: company.email,
+         empresaPhone: company.phone,
+         numeroRecibo: "001/2025",
+         dataEmissao: sale[:created_at].utc.strftime("%d-%m-%Y %H:%M:%S"),
+         vendedor: sale[:operator],
+         troco: sale[:difference].to_s + " kz",
+         telefone: client[:phone],
+         cliente: sale[:client],
+         desconto: sale[:descount].to_s + " kz",
+         total: sale[:total].to_s + " kz",
+         formaPagamento: sale[:payment_way],
+         observacoes: "Lembre-se de seguir as orientações de uso dos medicamentos<br/>Em caso de dúvida, consulte nossa equipe.",
+         produto: products
+     }.to_json+"\n")
+        invoiceObject.close
+
+        Dir.chdir("gfatura") do
+          if Gem.win_platform?
+            system('java -cp "application.jar;jackson-core-2.17.0.jar;jackson-databind-2.17.0.jar;jackson-annotations-2.17.0.jar" Gfatura')
+          else
+            system('java -cp "application.jar:jackson-core-2.17.0.jar:jackson-databind-2.17.0.jar:jackson-annotations-2.17.0.jar" Gfatura')
+          end
+        end
     end
 end

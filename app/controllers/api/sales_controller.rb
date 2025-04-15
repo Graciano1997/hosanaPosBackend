@@ -30,22 +30,31 @@ class Api::SalesController < ApplicationController
     client_p=params[:client]
     sale_p=params[:sale]
     sale_items = params[:items]
+    client = Client.new(name: client_p[:name], phone: client_p[:phone], email: client_p[:email], address: client_p[:address], client_type: client_p[:client_type], nif: client_p[:nif], address: client_p[:address])
 
-    client = Client.new(name: client_p[:name], phone: client_p[:phone], email: client_p[:email], address: client_p[:address], client_type: client_p[:client_type], nif: client_p[:nif])
-     if client.save
+    if sale_p[:invoiceType] == 2
+      sale = Sale.new(qty: sale_p[:qty], payment_way: sale_p[:payment_way], descount: sale_p[:descount], difference: sale_p[:difference], total: sale_p[:total], client: client, user_id: sale_p[:user_id], received_cash: sale_p[:received_cash], received_tpa: sale_p[:received_tpa])
+      sale_items.each do |item|
+        sale.sale_products << SaleProduct.new(sale_id: sale.id, product_id: item[:id], qty: item[:qty], subtotal: item[:total])
+      end
+      generate_and_print_invoice(display_sale(sale), client_p, sale_p[:invoiceType])
+      render json: { success: true }, status: :ok
+    else
+      if client.save
         sale = Sale.new(qty: sale_p[:qty], payment_way: sale_p[:payment_way], descount: sale_p[:descount], difference: sale_p[:difference], total: sale_p[:total], client_id: client.id, user_id: sale_p[:user_id], received_cash: sale_p[:received_cash], received_tpa: sale_p[:received_tpa])
         if sale.save
           sale_items.each do |item|
             SaleProduct.create!(sale_id: sale.id, product_id: item[:id], qty: item[:qty], subtotal: item[:total])
           end
-          generate_and_print_invoice(display_sale(sale), client_p)
+          generate_and_print_invoice(display_sale(sale), client_p, sale_p[:invoiceType])
           render json: { success: true }, status: :created
         else
           render json: { error: true, message: sale.errors.full_messages }, status: :unprocessable_entity
         end
-     else
-        render json: { error: true, message: client.errors.full_messages }, status: :unprocessable_entity
-     end
+      else
+          render json: { error: true, message: client.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
   end
 
   def update
@@ -73,45 +82,6 @@ class Api::SalesController < ApplicationController
     @sale=Sale.find_by(id: params[:id])
   end
 
-  # def print(sale, client)
-  #   invoiceObject=File.new("gfatura/fatura.json", "w")
-  #   products=[]
-
-  #   company= Company.first
-  #    sale[:sale_products].each do |item|
-  #      products.push({ nome: item[:name], qtd: item[:qty], preco: item[:price].to_s + " kz" })
-  #    end
-
-  #     invoiceObject.syswrite({
-  #       empresa: company.name,
-  #       nif: company.nif,
-  #       local: company.address,
-  #       email: company.email,
-  #       empresaPhone: company.phone,
-  #       numeroRecibo: "001/2025",
-  #       dataEmissao: sale[:created_at].utc.strftime("%d-%m-%Y %H:%M:%S"),
-  #       vendedor: sale[:operator],
-  #       troco: sale[:difference].to_s + " kz",
-  #       telefone: client[:phone],
-  #       cliente: sale[:client],
-  #       desconto: sale[:descount].to_s + " kz",
-  #       total: sale[:total].to_s + " kz",
-  #       formaPagamento: sale[:payment_way],
-  #       observacoes: "Lembre-se de seguir as orientações de uso dos medicamentos<br />Em caso de dúvida, consulte nossa equipe.",
-  #       produto: products
-  #   }
-  #       .to_json+"\n")
-  #       invoiceObject.close
-
-  #       Dir.chdir("gfatura") do
-  #         if Gem.win_platform?
-  #           system('java -cp "application.jar;jackson-core-2.17.0.jar;jackson-databind-2.17.0.jar;jackson-annotations-2.17.0.jar" Gfatura')
-  #         else
-  #           system('java -cp "application.jar:jackson-core-2.17.0.jar:jackson-databind-2.17.0.jar:jackson-annotations-2.17.0.jar" Gfatura')
-  #         end
-  #       end
-  # end
-
   def display_sale(sale)
     {
       id: sale.id,
@@ -127,8 +97,8 @@ class Api::SalesController < ApplicationController
       user_id: sale.user_id,
       sale_products: display_sale_products(sale.sale_products),
       operator: User.find(sale.user_id).name,
-      created_at: sale.created_at,
-      updated_at: sale.updated_at
+      created_at: sale.created_at ? sale.created_at : Time.now,
+      updated_at: sale.updated_at ? sale.updated_at : Time.now
     }
   end
 

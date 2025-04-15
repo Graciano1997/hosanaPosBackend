@@ -58,7 +58,7 @@ class Api::ProductsController < ApplicationController
 
   def expired_product_job
     ExpiredProductsJob.perform_later
-    render json: { success:true, message: "Expired products check has been queued" }
+    render json: { success: true, message: "Expired products check has been queued" }
   end
 
   def anual_expireds
@@ -74,7 +74,7 @@ class Api::ProductsController < ApplicationController
   private
 
   def product_params
-    params.expect(product: [ :code,:lote, :name, :qty, :price, :manufacture_date, :expire_date, :category_id, :cost_price, :mesure_unit, :brand, :description, :status, :weight, :dimension, :location_in_stock, :taxes, :keyword, :observation, :promotion, :discount, :product_type ])
+    params.expect(product: [ :code, :lote, :name, :qty, :price, :manufacture_date, :expire_date, :category_id, :cost_price, :mesure_unit, :brand, :description, :status, :weight, :dimension, :location_in_stock, :taxes, :keyword, :observation, :promotion, :discount, :product_type ])
   end
 
   def set_product

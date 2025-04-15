@@ -1,0 +1,59 @@
+<div class="invoice-header">
+  <h1>FATURA</h1>
+</div>
+
+<div class="company-info">
+  <h2><%= @company.name %></h2>
+  <p>NIF: <%= @company.nif %></p>
+  <p><%= @company.address %></p>
+  <p>Telefone: <%= @company.phone %></p>
+  <p>Email: <%= @company.email %></p>
+</div>
+
+<div class="invoice-info">
+  <h3>Fatura Nº <%= @invoice_number %></h3>
+  <p>Data de Emissão: <%= @issue_date %></p>
+  <p>Vendedor: <%= @sale[:operator] %></p>
+</div>
+
+<div class="clearfix"></div>
+
+<div class="client-info">
+  <h3>Dados do Cliente:</h3>
+  <p><strong>Nome:</strong> <%= @sale[:client] %></p>
+  <p><strong>Telefone:</strong> <%= @client[:phone] %></p>
+</div>
+
+<table class="invoice-items">
+  <thead>
+    <tr>
+      <th>Produto</th>
+      <th>Quantidade</th>
+      <th>Preço Unitário</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @products.each do |product| %>
+      <tr>
+        <td><%= product[:name] %></td>
+        <td><%= product[:qty] %></td>
+        <td><%= product[:price] %> kz</td>
+        <td><%= product[:price] * product[:qty] %> kz</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="invoice-total">
+  <p><strong>Subtotal:</strong> <%= @sale[:total] + @sale[:descount] %> kz</p>
+  <p><strong>Desconto:</strong> <%= @sale[:descount] %> kz</p>
+  <p><strong>Total:</strong> <%= @sale[:total] %> kz</p>
+  <p><strong>Forma de Pagamento:</strong> <%= @sale[:payment_way] %></p>
+  <p><strong>Troco:</strong> <%= @sale[:difference] %> kz</p>
+</div>
+
+<div class="invoice-footer">
+  <p>Observações: Lembre-se de seguir as orientações de uso dos medicamentos.<br>
+  Em caso de dúvida, consulte nossa equipe.</p>
+</div>

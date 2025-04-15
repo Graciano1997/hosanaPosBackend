@@ -1,6 +1,7 @@
 require "json"
 
 class Api::SalesController < ApplicationController
+  include Print
   before_action :set_sale, only: %i[show update destroy]
 
   def index
@@ -26,8 +27,6 @@ class Api::SalesController < ApplicationController
   end
 
   def create
-    puts params
-
     client_p=params[:client]
     sale_p=params[:sale]
     sale_items = params[:items]
@@ -39,7 +38,7 @@ class Api::SalesController < ApplicationController
           sale_items.each do |item|
             SaleProduct.create!(sale_id: sale.id, product_id: item[:id], qty: item[:qty], subtotal: item[:total])
           end
-          print(display_sale(sale), client_p)
+          generate_and_print_invoice(display_sale(sale), client_p)
           render json: { success: true }, status: :created
         else
           render json: { error: true, message: sale.errors.full_messages }, status: :unprocessable_entity
@@ -74,45 +73,44 @@ class Api::SalesController < ApplicationController
     @sale=Sale.find_by(id: params[:id])
   end
 
-  def print(sale, client)
-    invoiceObject=File.new("gfatura/fatura.json", "w")
-    products=[]
+  # def print(sale, client)
+  #   invoiceObject=File.new("gfatura/fatura.json", "w")
+  #   products=[]
 
-    company= Company.first
+  #   company= Company.first
+  #    sale[:sale_products].each do |item|
+  #      products.push({ nome: item[:name], qtd: item[:qty], preco: item[:price].to_s + " kz" })
+  #    end
 
-     sale[:sale_products].each do |item|
-       products.push({ nome: item[:name], qtd: item[:qty], preco: item[:price].to_s + " kz" })
-     end
+  #     invoiceObject.syswrite({
+  #       empresa: company.name,
+  #       nif: company.nif,
+  #       local: company.address,
+  #       email: company.email,
+  #       empresaPhone: company.phone,
+  #       numeroRecibo: "001/2025",
+  #       dataEmissao: sale[:created_at].utc.strftime("%d-%m-%Y %H:%M:%S"),
+  #       vendedor: sale[:operator],
+  #       troco: sale[:difference].to_s + " kz",
+  #       telefone: client[:phone],
+  #       cliente: sale[:client],
+  #       desconto: sale[:descount].to_s + " kz",
+  #       total: sale[:total].to_s + " kz",
+  #       formaPagamento: sale[:payment_way],
+  #       observacoes: "Lembre-se de seguir as orientações de uso dos medicamentos<br />Em caso de dúvida, consulte nossa equipe.",
+  #       produto: products
+  #   }
+  #       .to_json+"\n")
+  #       invoiceObject.close
 
-      invoiceObject.syswrite({
-        empresa: company.name,
-        nif: company.nif,
-        local: company.address,
-        email: company.email,
-        empresaPhone: company.phone,
-        numeroRecibo: "001/2025",
-        dataEmissao: sale[:created_at].utc.strftime("%d-%m-%Y %H:%M:%S"),
-        vendedor: sale[:operator],
-        troco: sale[:difference].to_s + " kz",
-        telefone: client[:phone],
-        cliente: sale[:client],
-        desconto: sale[:descount].to_s + " kz",
-        total: sale[:total].to_s + " kz",
-        formaPagamento: sale[:payment_way],
-        observacoes: "Lembre-se de seguir as orientações de uso dos medicamentos<br />Em caso de dúvida, consulte nossa equipe.",
-        produto: products
-    }
-        .to_json+"\n")
-        invoiceObject.close
-
-        Dir.chdir("gfatura") do
-          if Gem.win_platform?
-            system('java -cp "application.jar;jackson-core-2.17.0.jar;jackson-databind-2.17.0.jar;jackson-annotations-2.17.0.jar" Gfatura')
-          else
-            system('java -cp "application.jar:jackson-core-2.17.0.jar:jackson-databind-2.17.0.jar:jackson-annotations-2.17.0.jar" Gfatura')
-          end
-        end
-  end
+  #       Dir.chdir("gfatura") do
+  #         if Gem.win_platform?
+  #           system('java -cp "application.jar;jackson-core-2.17.0.jar;jackson-databind-2.17.0.jar;jackson-annotations-2.17.0.jar" Gfatura')
+  #         else
+  #           system('java -cp "application.jar:jackson-core-2.17.0.jar:jackson-databind-2.17.0.jar:jackson-annotations-2.17.0.jar" Gfatura')
+  #         end
+  #       end
+  # end
 
   def display_sale(sale)
     {

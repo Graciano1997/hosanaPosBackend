@@ -1,5 +1,5 @@
 class Api::UsersController < ApplicationController
-  before_action :set_user, only: %i[ show destroy update  ]
+  before_action :set_user, only: %i[show destroy]
 
   def index
     users = User.order(id: :asc).map { |u| display_user(u) }
@@ -20,12 +20,12 @@ class Api::UsersController < ApplicationController
     end
 
     def update
-      puts "params", params
-
-       if @user.update(user_params)
-            render json: { success: true, user: display_user(@user) }, status: :ok
+      user = User.find_by(id: params[:user][:id])
+      params[:user].delete(:id)
+       if user.update(user_params)
+            render json: { success: true, user: display_user(user) }, status: :ok
        else
-            render json: { error: true, message: @user.errors.full_messages }, status: :unprocessable_entity
+            render json: { error: true, message: user.errors.full_messages }, status: :unprocessable_entity
        end
     end
 

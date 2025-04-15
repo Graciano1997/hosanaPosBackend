@@ -364,6 +364,9 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    wicked_pdf (2.8.1)
+      activesupport
+    wkhtmltopdf-binary-edge (0.12.6.0)
     zeitwerk (2.7.1)
 
 PLATFORMS
@@ -403,6 +406,8 @@ DEPENDENCIES
   solid_queue
   thruster
   tzinfo-data
+  wicked_pdf
+  wkhtmltopdf-binary-edge
 
 BUNDLED WITH
    2.5.23

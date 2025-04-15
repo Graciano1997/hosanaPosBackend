@@ -10,15 +10,15 @@ default: &default
 
 development:
   <<: *default
-  database: hozsystem_development
-  username: postgres
-  password: gra
+  database: <%=ENV['DATABASE_DEV']%>
+  username: <%=ENV['USERNAME']%>
+  password: <%=ENV['PASSWORD']%>
 
 test:
   <<: *default
-  database: hozsystem_test
-  username: postgres
-  password: gra
+  database: <%=ENV['DATABASE_TEST']%>
+  username: <%=ENV['USERNAME']%>
+  password: <%=ENV['PASSWORD']%>
 
 # production:
 #   <<: *default

@@ -1,5 +1,6 @@
 class Api::ProductsController < ApplicationController
   # before_action :authorize_request
+  include YearBalance
   before_action :set_product, only: %i[show update destroy]
 
   def index
@@ -18,6 +19,11 @@ class Api::ProductsController < ApplicationController
   def product_fields
     product=Product.column_names
     render json: { success: true, data: product }, status: :ok
+  end
+
+  def anual_expireds
+    current_year = params[:year].to_i
+    anual_Balance("ExpiredProduct", "total", current_year, date_field: "created_at")
   end
 
   def expireds

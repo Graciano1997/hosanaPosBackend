@@ -1,5 +1,8 @@
 module Print
     extend ActiveSupport::Concern
+
+    include Money
+
     def generate_and_print_invoice(sale, client, invoice_type)
       @sale = sale
       @client = client
@@ -9,10 +12,16 @@ module Print
       @issue_date = sale[:created_at].utc.strftime("%d-%m-%Y %H:%M:%S")
 
       sale[:sale_products].each do |item|
+        p=Product.find_by(code: item[:code])
+
         @products.push({
           name: item[:name],
           qty: item[:qty],
-          price: item[:price]
+          price: item[:price],
+          taxes: p[:taxes] ? p[:taxes] : 0,
+          discount: p[:discount] ? p[:discount] : 0,
+          retention: 0,
+          subtotal: item[:subtotal]
         })
       end
 
@@ -25,10 +34,10 @@ module Print
             <td class="item-name">#{product[:name]}</td>
             <td>#{sprintf("%.2f", product[:price])}</td>
             <td>#{product[:qty]} un</td>
-            <td>0.00%</td>
-            <td>0.00%</td>
-            <td>0.00%</td>
-            <td class="total-column">#{sprintf("%.2f", product[:price] * product[:qty])}</td>
+            <td>#{product[:discount]} </td>
+            <td>#{product[:taxes]}</td>
+            <td>#{product[:retention]}</td>
+            <td class="total-column">#{ format_money(product[:subtotal])}</td>
           </tr>
         ROW
     end
@@ -289,12 +298,12 @@ module Print
           <thead>
             <tr>
               <th width="30px">N</th>
-              <th width="30%">Artigo</th>
-              <th width="10%">Preco Unit.</th>
+              <th width="30%">Item</th>
+              <th width="10%">Preço Unit.</th>
               <th width="10%">Qtd</th>
-              <th width="10%">Desc.</th>
-              <th width="10%">Taxa</th>
-              <th width="10%">Retencao</th>
+              <th width="10%">Desc.(%).</th>
+              <th width="10%">Taxa(%)</th>
+              <th width="10%">Retenção(%)</th>
               <th width="10%">Total</th>
             </tr>
           </thead>
@@ -309,13 +318,13 @@ module Print
               <th width="20%">Taxa/Valor</th>
               <th width="20%">Incid./Qtd</th>
               <th width="20%">Total</th>
-              <th width="40%" style="text-align: center;">Motivo Isencao</th>
+              <th width="40%" style="text-align: center;">Motivo Isenção</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>IVA (0,00%)</td>
-              <td>175.000,00</td>
+              <td>#{ format_money(@sale[:total])}</td>
               <td>0,00</td>
               <td>Isento nos termos da alinea a) do artigoº do CIVA</td>
             </tr>
@@ -349,11 +358,11 @@ module Print
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr>
                             <td style="text-align: left; padding: 4px;"><h6 style="margin: 4px 0;">Total da Fatura</h6></td>
-                            <td style="text-align: right; padding: 4px;">#{sale[:total]}</td>
+                            <td style="text-align: right; padding: 4px;">#{ format_money(sale[:total])}</td>
                         </tr>
                         <tr>
                             <td style="text-align: left; padding: 4px;"><h6 style="margin: 4px 0;">Desconto</h6></td>
-                            <td style="text-align: right; padding: 4px;">#{@sale[:descount]},00</td>
+                            <td style="text-align: right; padding: 4px;">#{@sale[:descount]}</td>
                         </tr>
                         <tr>
                             <td style="text-align: left; padding: 4px;"><h6 style="margin: 4px 0;">IVA</h6></td>
@@ -365,11 +374,11 @@ module Print
                         </tr>
                         <tr>
                             <td style="text-align: left; padding: 4px;"><h6 style="margin: 4px 0;">Total</h6></td>
-                            <td style="text-align: right; padding: 4px;">#{@sale[:total]},00</td>
+                            <td style="text-align: right; padding: 4px;">#{format_money(@sale[:total])}</td>
                         </tr>
                         <tr>
                             <td style="text-align: left; padding: 4px;"><h6 style="margin: 4px 0;">Troco</h6></td>
-                            <td style="text-align: right; padding: 4px;">#{@sale[:difference]},00</td>
+                            <td style="text-align: right; padding: 4px;">#{format_money(@sale[:difference])}</td>
                         </tr>
                     </table>
                 </td>

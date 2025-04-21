@@ -1,9 +1,8 @@
 class ApplicationController < ActionController::API
   include ActionController::Rendering
+  include ActionController::Cookies
 
   def authorize_request
-    header=request.headers["Authorization"]
-
     if header
       token= header.split(" ").last
       begin

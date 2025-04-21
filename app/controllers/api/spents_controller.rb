@@ -1,5 +1,6 @@
 class Api::SpentsController < ApplicationController
   before_action :set_spent, only: %i[ show destroy update ]
+  include YearBalance
 
   def index
     spents=[]
@@ -28,12 +29,7 @@ class Api::SpentsController < ApplicationController
 
   def anual_spents
     current_year = params[:year].to_i
-    monthly_total_spents=[]
-    (1..12).each do |month|
-      current_month=Date.new(current_year, month, 1)
-      monthly_total_spents << Spent.where(created_at: current_month..current_month.end_of_month).sum(:amount)
-    end
-    render json: { success: true, data: monthly_total_spents }, status: :ok
+    anual_Balance("Spent", "amount", current_year)
   end
 
   def show
@@ -84,8 +80,8 @@ class Api::SpentsController < ApplicationController
       user: spent.user.name,
       image: spent.user.image.attached? ? url_for(spent.user.image) : "none",
       user_id: spent.user_id,
-      created_at: spent.created_at.utc.strftime("%d-%m-%Y %H:%M:%S"),
-      updated_at: spent.updated_at.utc.strftime("%d-%m-%Y %H:%M:%S")
+      created_at: spent.created_at,
+      updated_at: spent.updated_at
     }
   end
 end

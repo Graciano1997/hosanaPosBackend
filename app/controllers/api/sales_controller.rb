@@ -2,6 +2,8 @@ require "json"
 
 class Api::SalesController < ApplicationController
   include Print
+  include YearBalance
+
   before_action :set_sale, only: %i[show update destroy]
 
   def index
@@ -24,6 +26,11 @@ class Api::SalesController < ApplicationController
       monthly_total_spents << Spent.where(created_at: current_month..current_month.end_of_month).sum(:amount)
     end
     render json: { success: true, data: monthly_total_spents }, status: :ok
+  end
+
+  def anual_sales
+    current_year = params[:year].to_i
+    anual_Balance("Sale", "total", current_year)
   end
 
   def create
@@ -115,6 +122,8 @@ class Api::SalesController < ApplicationController
       code: sale_product.product.code,
       name: sale_product.product.name,
       qty: sale_product.qty,
+      discount: sale_product.product.discount ? sale_product.product.discount : 0,
+      taxes: sale_product.product.taxes ? sale_product.product.taxes : 0,
       price: sale_product.product.price,
       subtotal: sale_product.subtotal
     }

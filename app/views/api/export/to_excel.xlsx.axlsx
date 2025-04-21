@@ -1,0 +1,15 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Dados") do |sheet|
+  
+  sheet.add_row ["ID", "Nome", "Email", "Criado em"]
+  
+  @records.each do |record|
+    sheet.add_row [
+      record.id,
+      record.name,
+      record.email,
+      record.created_at
+    ]
+  end
+end

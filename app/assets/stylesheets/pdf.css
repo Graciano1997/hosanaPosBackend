@@ -1,0 +1,44 @@
+/* app/assets/stylesheets/pdf.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  .invoice-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .company-info {
+    float: left;
+    width: 50%;
+  }
+  
+  .invoice-info {
+    float: right;
+    width: 50%;
+    text-align: right;
+  }
+  
+  .invoice-items {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  .invoice-items th, .invoice-items td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .invoice-items th {
+    background-color: #f2f2f2;
+  }
+  
+  .invoice-total {
+    text-align: right;
+    font-weight: bold;
+    margin-top: 30px;
+  }

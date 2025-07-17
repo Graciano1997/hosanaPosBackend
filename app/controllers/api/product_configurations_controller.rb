@@ -18,10 +18,4 @@ class Api::ProductConfigurationsController < ApplicationController
     end
     render json: { success: true }, status: :ok
   end
-
-  # private
-
-  # def productConfiguration_params
-  #   params.expect(productConfiguration: [ :field, :active, :mandatory ])
-  # end
 end

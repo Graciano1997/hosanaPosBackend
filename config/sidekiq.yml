@@ -1,4 +1,0 @@
-:schedule:
-  expire_products_job:
-    cron: "0 0 * * *"  # This means every day at 00:00 AM
-    class: "ExpiredProductsJob"

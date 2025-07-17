@@ -1,0 +1,8 @@
+:schedule:
+  expire_products_job:
+    cron: "0 0 * * *"
+    class: "ExpiredProductsJob"
+  reset_invoice_number:
+    cron: "0 0 1 1 *"
+    class: "ResetInvoiceNumberJob"
+    queue: "default"

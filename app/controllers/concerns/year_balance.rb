@@ -1,7 +1,6 @@
 module YearBalance
   extend ActiveSupport::Concern
 
-
   def anual_Balance(model, key, year, date_field: "created_at")
     current_year = year
     monthly_total=[]

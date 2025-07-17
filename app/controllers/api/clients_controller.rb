@@ -1,5 +1,4 @@
 class Api::ClientsController < ApplicationController
-    # before_action :authorize_request
     before_action :set_client, only: %i[show update destroy]
 
     def index
@@ -80,7 +79,6 @@ class Api::ClientsController < ApplicationController
     def set_client
       @client=Client.find_by(id: params[:id])
     end
-
 
     def display_client(client)
       {

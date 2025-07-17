@@ -3,12 +3,13 @@ module Print
 
     include Money
 
+    # this method is used to generate and print the invoice, need to be refactored
     def generate_and_print_invoice(sale, client, invoice_type)
       @sale = sale
       @client = client
       @company = Company.first
       @products = []
-      @invoice_number = "001/2025"
+      @invoice_number = sale[:invoice_number]
       @issue_date = sale[:created_at].utc.strftime("%d-%m-%Y %H:%M:%S")
 
       sale[:sale_products].each do |item|
@@ -324,7 +325,7 @@ module Print
           <tbody>
             <tr>
               <td>IVA (0,00%)</td>
-              <td>#{ format_money(@sale[:total])}</td>
+              <td>#{format_money(@sale[:total])}</td>
               <td>0,00</td>
               <td>Isento nos termos da alinea a) do artigoº do CIVA</td>
             </tr>
@@ -416,11 +417,10 @@ module Print
            # #  Imprimir o PDF diretamente
            if Gem.win_platform?
              # Para Windows, use o comando print
-             system("print /d:\"HP-Deskjet-Plus-4100-series\" \"{file_path}\"")
+             system("print /d:\"HP-Deskjet-Plus-4100-series\" \"#{file_path}\"")
            else
-             # Para Unix/Linux, use o comando lpr
-             system("lpr \"#{file_path}\"")
-             #  system("lpr -P \HP-Deskjet-Plus-4100-series\" \"{file_path}\"")
+            # Para Unix/Linux, use o comando lpr
+            system("lpr -P \HP-Deskjet-Plus-4100-series\" \"{file_path}\"")
            end
 
           # if Gem.win_platform?
@@ -432,7 +432,9 @@ module Print
           # end
           file_path
     end
+    # this method is used to generate and print the invoice, need to be refactored
 
+    # this method is used to print the thermal invoice using gfatura solution for Star printer and others thermal printers
     def print(sale, client)
      invoiceObject=File.new("gfatura/fatura.json", "w")
      products=[]
@@ -441,6 +443,8 @@ module Print
       sale[:sale_products].each do |item|
         products.push({ nome: item[:name], qtd: item[:qty], preco: item[:price].to_s + " kz" })
       end
+      @invoice_number = sale[:invoice_number]
+
 
        invoiceObject.syswrite({
          empresa: company.name,
@@ -448,7 +452,7 @@ module Print
          local: company.address,
          email: company.email,
          empresaPhone: company.phone,
-         numeroRecibo: "001/2025",
+         numeroRecibo: sale[:invoice_number],
          dataEmissao: sale[:created_at].utc.strftime("%d-%m-%Y %H:%M:%S"),
          vendedor: sale[:operator],
          troco: sale[:difference].to_s + " kz",
@@ -457,7 +461,7 @@ module Print
          desconto: sale[:descount].to_s + " kz",
          total: sale[:total].to_s + " kz",
          formaPagamento: sale[:payment_way],
-         observacoes: "Lembre-se de seguir as orientações de uso dos medicamentos<br/>Em caso de dúvida, consulte nossa equipe.",
+         observacoes: company.sale_observation,
          produto: products
      }.to_json+"\n")
         invoiceObject.close

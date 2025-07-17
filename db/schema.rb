@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_18_081426) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_21_231625) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -104,6 +104,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_081426) do
     t.datetime "updated_at", null: false
     t.string "website"
     t.string "alternative_phone"
+    t.string "sale_observation"
   end
 
   create_table "currencies", force: :cascade do |t|
@@ -122,6 +123,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_081426) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_expired_products_on_product_id"
+  end
+
+  create_table "invoice_numbers", force: :cascade do |t|
+    t.integer "year"
+    t.integer "sequency", default: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "product_configurations", force: :cascade do |t|
@@ -189,6 +197,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_081426) do
     t.datetime "updated_at", null: false
     t.decimal "received_cash"
     t.decimal "received_tpa"
+    t.string "invoice_number"
     t.index ["client_id"], name: "index_sales_on_client_id"
     t.index ["user_id"], name: "index_sales_on_user_id"
   end

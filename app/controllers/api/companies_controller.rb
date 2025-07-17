@@ -10,11 +10,6 @@ class Api::CompaniesController < ApplicationController
         render json: { success: true, data: @company }, status: :ok
     end
 
-    def company_fields
-        company=Company.column_names
-        render json: { success: true, data: product }, status: :ok
-    end
-
     def create
         company = Company.new(company_params)
         if company.save
@@ -43,7 +38,7 @@ class Api::CompaniesController < ApplicationController
     private
 
     def company_params
-        params.expect(company: [ :name, :email, :phone, :address, :nif, :website, :alternative_phone ])
+        params.expect(company: [ :name, :email, :phone, :address, :nif, :website, :alternative_phone, :sale_observation ])
     end
 
     def set_company

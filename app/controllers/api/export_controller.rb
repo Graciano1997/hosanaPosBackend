@@ -1,3 +1,11 @@
+# this controller is responsible for exporting data to Excel format...
+## it uses the Axlsx gem to create the Excel file and send it as a response to the client.
+#
+# The controller has a single action, to_excel, which takes the model name and columns as parameters.
+# It retrieves the records from the specified model, creates an Excel file with the specified columns, and sends it as a response.
+# The controller uses the Axlsx gem to create the Excel file and styles the header row with a green background and black text.
+# The file is named based on the model name and the current date, and it is sent as an attachment in the response.
+
 class Api::ExportController < ApplicationController
   include ActionController::MimeResponds
   def to_excel
@@ -5,7 +13,6 @@ class Api::ExportController < ApplicationController
     model_class=model_name.constantize
 
     @records = model_class.order(id: :asc)
-    # @records = User.where("created_at >= ?", 1.month.ago) # Exemplo de filtro
 
     columns = params[:columns].present? ? params[:columns].map(&:to_sym) : model_class.column_names.map(&:to_sym)
 
@@ -17,22 +24,12 @@ class Api::ExportController < ApplicationController
     styles = wb.styles
 
     header_style = styles.add_style(
-    bg_color: "86efac",  # Tailwind green-300
-    # ou
-    # bg_color: "bbf7d0",  # Tailwind green-200
-    fg_color: "000000",  # Texto preto para contrastar com o fundo verde claro
-    b: true,             # Negrito
+    bg_color: "86efac",
+    fg_color: "000000",
+    b: true,
     alignment: { horizontal: :center }
     )
 
-    # header = styles.add_style bg_color: "00", fg_color: "FF", sz: 12, bold: true, border: { style: :thin, color: "000000" }
-
-    # header_style = styles.add_style(
-    #   bg_color: "336699",     # Cor de fundo azul - você pode usar qualquer código de cor HEX
-    #   fg_color: "FFFFFF",     # Cor do texto branco
-    #   b: true,               # Negrito
-    #   alignment: { horizontal: :center }  # Alinhamento centralizado
-    # )
     file_name = "#{model_name.underscore.pluralize}_#{Date.today.strftime('%Y%m%d')}.xlsx"
 
     wb.add_worksheet(name: model_name.pluralize) do |sheet|

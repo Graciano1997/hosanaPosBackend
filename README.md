@@ -14,55 +14,19 @@
 
 ### Prerequisites
 
-- Ruby >= 3.3.0
-- Rails >= 8.0
-- PostgreSQL
-- Node.js & npm 
-
-### Setup Instructions
-
-1. **Clone the repository**
-
-```bash
-git 
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
 - Ruby >= 3.0
 - Rails >= 7.0
 - PostgreSQL
-- Node.js & Yarn (for JS dependencies, if needed)
+- Node.js
 
 ### Setup Instructions
 
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/your-username/hosanna-sale-point-backend.git
-cd hosanna-sale-point-backend
+git clone https://github.com/Graciano1997/hosanaPosBackend.git
 
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Ruby >= 3.0
-- Rails >= 7.0
-- PostgreSQL
-- Node.js & Yarn (for JS dependencies, if needed)
-
-### Setup Instructions
-
-1. **Clone the repository**
-
-```bash
-git clone https://github.com/your-username/hosanna-sale-point-backend.git
-
-cd hosanna-sale-point-backend
+cd hosanaPosBackend
 
 bundle install
 

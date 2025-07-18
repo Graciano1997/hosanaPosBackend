@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "rails", "~> 8.0.1"
+gem "rails", "~> 8.0.2"
 # Use sqlite3 as the database for Active Record
 gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"

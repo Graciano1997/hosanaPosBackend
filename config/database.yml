@@ -20,8 +20,7 @@ test:
   username: <%=ENV['USERNAME']%>
   password: <%=ENV['PASSWORD']%>
 
-# production:
-#   <<: *default
-#   database: hozsystem_production
-#   username: gra
-#   password: <%= ENV["BLOG_APP_DATABASE_PASSWORD"] %>
+production:
+  adapter: postgresql
+  url: <%= ENV['DATABASE_URL'] %>
+  

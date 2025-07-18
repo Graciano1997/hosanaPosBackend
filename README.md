@@ -64,7 +64,7 @@ bundle exec rspec
 ✨ Author
 
 Graciano Henrique
- [LinkedIn](https://www.linkedin.com/in/gracianohenrique/) | [Graciano Henrique](https://www.linkedin.com/in/gracianohenrique/)
+ [LinkedIn](https://www.linkedin.com/in/gracianohenrique/) | [Github](https://www.linkedin.com/in/gracianohenrique/)
 
 🙏 Acknowledgments
 

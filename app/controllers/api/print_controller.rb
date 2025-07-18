@@ -1,4 +1,4 @@
-require "pos-printer"
+# require "pos-printer"
 # class Api::PrintController < ApplicationController
 
 def index

@@ -44,7 +44,6 @@ The frontend built with React is available at:
 
 🧪 Running Tests
 
-If tests are set up:
 ```bash
 bundle exec rspec
 ```
@@ -64,7 +63,7 @@ bundle exec rspec
 ✨ Author
 
 Graciano Henrique
- [LinkedIn](https://www.linkedin.com/in/gracianohenrique/) | [Github](https://www.linkedin.com/in/gracianohenrique/)
+[LinkedIn](https://www.linkedin.com/in/gracianohenrique/) | [Github](https://github.com/Graciano1997/)
 
 🙏 Acknowledgments
 
@@ -74,4 +73,4 @@ Graciano Henrique
 
 📄 License
 
-This project is licensed under the MIT License.
+This project is [MIT](./LICENSE) licensed.

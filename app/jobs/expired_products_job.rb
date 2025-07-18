@@ -3,7 +3,7 @@ class ExpiredProductsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    expired_products = Product.where("expire_date < ?", Date.today)
+    expired_products = Product.where("expire_date < ? and qty > 0 ", Date.today)
 
      expired_products.find_each do |product|
       if ExpiredProduct.where(expired_on: product.expire_date, product_id: product.id).empty?

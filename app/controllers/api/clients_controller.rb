@@ -14,21 +14,6 @@ class Api::ClientsController < ApplicationController
       render json: { success: true, data: @product }
     end
 
-    def product_fields
-      product=Product.column_names
-      render json: { success: true, data: product }, status: :ok
-    end
-
-    def expireds
-      products=[]
-      @products=ExpiredProduct.all
-      @products.each do |item|
-        products.push(display_product_expired(item))
-      end unless @products.size.zero?
-
-      render json: { success: true, data: products }, status: :ok
-    end
-
     def create
       product=Product.new(product_params)
       if product.save
@@ -86,6 +71,7 @@ class Api::ClientsController < ApplicationController
         name: client.name,
         phone: client.phone,
         nif: client.nif,
+        email: client.email,
         address: client.address,
         client_type: client.client_type,
         current_account: client.current_account,

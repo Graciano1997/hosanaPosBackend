@@ -70,7 +70,7 @@ class Api::ProductsController < ApplicationController
   def anual_expireds
     current_year = params[:year].to_i
     monthly_total_expireds=[]
-    (1..12).each do |month|
+    (1..Time.now.month).each do |month|
       current_month=Date.new(current_year, month, 1)
       monthly_total_expireds << ExpiredProduct.where(expired_on: current_month..current_month.end_of_month).sum(:total)
     end

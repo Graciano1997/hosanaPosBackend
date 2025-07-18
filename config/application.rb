@@ -27,6 +27,8 @@ module HozsystemApi
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
+    # Use a different queue adapter for production
+    config.active_job.queue_adapter = :async  # or :sidekiq, :resque, etc.
     config.api_only = true
     # config.assets.initialize_on_precompile = false
   end

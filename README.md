@@ -1,6 +1,6 @@
 # Hosanna Sale Point – API Backend
 
-**Hosanna Sale Point** is a modern, efficient Sales Point (POS) system designed to manage product sales, transactions, and inventory with ease. This repository contains the **API backend**, built with **Ruby on Rails** and powered by **PostgreSQL** for robust data management. The frontend, developed in **React**, is maintained in a [separate repository](#frontend-repository-link).
+**Hosanna Sale Point** is a modern, efficient Sales Point (POS) system designed to manage product sales, transactions, and inventory with ease. This repository contains the **API backend**, built with **Ruby on Rails** and powered by **PostgreSQL** for robust data management. The frontend, developed in **React**, is maintained in a [separate repository](https://github.com/Graciano1997/hosannaPosFront.git).
 ---
 
 ## 🧰 Tech Stack
@@ -33,12 +33,45 @@ bundle install
 rails db:create db:migrate db:seed
 
 rails server
+```
 
+🔗 Frontend Repository
+
+The frontend built with React is available at:
+
+[➡️ Hosanna Sale Point – Frontend](https://github.com/Graciano1997/hosannaPosFront.git)
+
+
+🧪 Running Tests
+
+If tests are set up:
+```bash
 bundle exec rspec
 ```
+
+👨‍💻 Contributing
+
+    Fork the repo
+
+    Create your feature branch (git checkout -b feature/your-feature)
+
+    Commit your changes (git commit -am 'Add feature')
+
+    Push to the branch (git push origin feature/your-feature)
+
+    Open a Pull Request
+
+✨ Author
+
+Graciano Henrique
+ [LinkedIn](https://www.linkedin.com/in/gracianohenrique/) | [Graciano Henrique](https://www.linkedin.com/in/gracianohenrique/)
 
 🙏 Acknowledgments
 
 - Ruby on Rails for the powerful framework
 - PostgreSQL for reliable data storage
 - The open-source community 💛
+
+📄 License
+
+This project is licensed under the MIT License.

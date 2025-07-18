@@ -10,7 +10,9 @@
 - **CORS** – To allow cross-origin requests from the React frontend
 ---
 
-## 🚀 Getting Started
+
+## 🚀 Live 
+- [visit hosannaBackendApi](https://hosanaposbackendapi.onrender.com/)
 
 ### Prerequisites
 

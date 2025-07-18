@@ -9,7 +9,7 @@ class Api::ProductsController < ApplicationController
     @products.each do |item|
       products.push(display_product(item))
     end unless @products.size.zero?
-    render json: { success: false, data: products }, status: :ok
+    render json: { success: true, data: products }, status: :ok
   end
 
   def show

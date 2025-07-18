@@ -67,8 +67,8 @@ Graciano Henrique
 
 🙏 Acknowledgments
 
-- Ruby on Rails for the powerful framework
-- PostgreSQL for reliable data storage
+- Ruby on Rails for the powerful framework.
+- PostgreSQL for reliable data storage.
 - The open-source community 💛
 
 📄 License

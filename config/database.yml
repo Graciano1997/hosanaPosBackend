@@ -1,5 +1,4 @@
 # PostgreSQL. Versions 9.3 and up are supported.
-#
 
 default: &default
   adapter: postgresql
@@ -21,6 +20,6 @@ test:
   password: <%=ENV['PASSWORD']%>
 
 production:
-  adapter: postgresql
+  <<: *default
   url: <%= ENV['DATABASE_URL'] %>
   

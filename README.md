@@ -1,7 +1,7 @@
 # Hosanna Sale Point – API Backend
 
 **Hosanna Sale Point** is a modern, efficient Sales Point (POS) system designed to manage product sales, transactions, and inventory with ease. This repository contains the **API backend**, built with **Ruby on Rails** and powered by **PostgreSQL** for robust data management. The frontend, developed in **React**, is maintained in a [separate repository](https://github.com/Graciano1997/hosannaPosFront.git).
----
+
 
 ## 🧰 Tech Stack
 
@@ -12,6 +12,9 @@
 
 ## 🚀 Live 
 - [visit hosannaBackendApi](https://hosanaposbackendapi.onrender.com/)
+
+- [visit hosannaPosFront](https://hosanna-pos-front.vercel.app/)
+
 
 ### Prerequisites
 

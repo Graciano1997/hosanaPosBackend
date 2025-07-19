@@ -37,7 +37,7 @@ class Api::SalesController < ApplicationController
     client_p=params[:client]
     sale_p=params[:sale]
     sale_items = params[:items]
-    client = Client.where("phone='?' or nif=? or email=? ", client_p[:phone], client_p[:nif], client_p[:email]).first ||  Client.new(name: client_p[:name], phone: client_p[:phone], email: client_p[:email], client_type: client_p[:client_type], nif: client_p[:nif], address: client_p[:address])
+    client = Client.where("nif=? or email=? ", client_p[:nif], client_p[:email]).first ||  Client.new(name: client_p[:name], phone: client_p[:phone], email: client_p[:email], client_type: client_p[:client_type], nif: client_p[:nif], address: client_p[:address])
 
     if sale_p[:invoiceType] == 2
       sale = Sale.new(qty: sale_p[:qty], payment_way: sale_p[:payment_way], descount: sale_p[:descount], difference: sale_p[:difference], total: sale_p[:total], client: client, user_id: sale_p[:user_id], received_cash: sale_p[:received_cash], received_tpa: sale_p[:received_tpa], invoice_number: InvoiceNumber.next!)
@@ -53,9 +53,12 @@ class Api::SalesController < ApplicationController
           sale_items.each do |item|
             SaleProduct.create!(sale_id: sale.id, product_id: item[:id], qty: item[:qty], subtotal: item[:total])
           end
+
           # generate_and_print_invoice(display_sale(sale), client_p, sale_p[:invoiceType])
-          print(display_sale(sale), client_p)
-          render json: { success: true }, status: :created
+          # print(display_sale(sale), client_p)
+
+          render json: { success: true, invoice_item: display_invoice(display_sale(sale), client_p) }, status: :created
+
         else
           render json: { error: true, message: sale.errors.full_messages }, status: :unprocessable_entity
         end

@@ -434,9 +434,39 @@ module Print
     end
     # this method is used to generate and print the invoice, need to be refactored
 
-    # this method is used to print the thermal invoice using gfatura solution for Star printer and others thermal printers
+    def display_invoice(sale, client)
+      products=[]
+      company= Company.first
+
+      sale[:sale_products].each do |item|
+        products.push({ nome: item[:name], qtd: item[:qty], preco: item[:price].to_s + " kz" })
+      end
+
+      @invoice_number = sale[:invoice_number]
+
+      {
+         empresa: company.name,
+         nif: company.nif,
+         local: company.address,
+         email: company.email,
+         empresaPhone: company.phone,
+         numeroRecibo: sale[:invoice_number],
+         dataEmissao: sale[:created_at].utc.strftime("%d-%m-%Y %H:%M:%S"),
+         vendedor: sale[:operator],
+         troco: sale[:difference].to_s + " kz",
+         telefone: client[:phone],
+         cliente: sale[:client],
+         desconto: sale[:descount].to_s + " kz",
+         total: sale[:total].to_s + " kz",
+         formaPagamento: sale[:payment_way],
+         observacoes: company.sale_observation,
+         produto: products
+      }
+    end
+
     def print(sale, client)
      invoiceObject=File.new("gfatura/fatura.json", "w")
+
      products=[]
 
      company= Company.first

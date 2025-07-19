@@ -1,2 +1,0 @@
-Main-Class: Gfatura
-Class-Path: jackson-core-2.17.0.jar jackson-databind-2.17.0.jar jackson-annotations-2.17.0.jar

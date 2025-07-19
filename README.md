@@ -7,7 +7,7 @@
 
 - **Ruby on Rails** – RESTful API backend
 - **PostgreSQL** – Relational database
-- **CORS** – To allow cross-origin requests from the React frontend
+- **CORS** – To allow cross-origin requests from the React frontend.
 ---
 
 ## 🚀 Live 

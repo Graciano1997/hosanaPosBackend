@@ -73,7 +73,7 @@ Graciano Henrique
 
 - Ruby on Rails for the powerful framework.
 - PostgreSQL for reliable data storage.
-- The open-source community 💛
+- The open-source community 💛.
 
 📄 License
 

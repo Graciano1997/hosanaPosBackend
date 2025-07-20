@@ -44,8 +44,9 @@ class Api::SalesController < ApplicationController
       sale_items.each do |item|
         sale.sale_products << SaleProduct.new(sale_id: sale.id, product_id: item[:id], qty: item[:qty], subtotal: item[:total])
       end
-      # generate_and_print_invoice(display_sale(sale), client_p, sale_p[:invoiceType])
-      render json: { success: true }, status: :ok
+      
+      render json: { success: true, invoice_item: display_invoice(display_sale(sale), client_p) }, status: :ok
+
     else
       if client.save
         sale = Sale.new(qty: sale_p[:qty], payment_way: sale_p[:payment_way], descount: sale_p[:descount], difference: sale_p[:difference], total: sale_p[:total], client_id: client.id, user_id: sale_p[:user_id], received_cash: sale_p[:received_cash], received_tpa: sale_p[:received_tpa], invoice_number: InvoiceNumber.next!)
@@ -53,9 +54,6 @@ class Api::SalesController < ApplicationController
           sale_items.each do |item|
             SaleProduct.create!(sale_id: sale.id, product_id: item[:id], qty: item[:qty], subtotal: item[:total])
           end
-
-          # generate_and_print_invoice(display_sale(sale), client_p, sale_p[:invoiceType])
-          # print(display_sale(sale), client_p)
 
           render json: { success: true, invoice_item: display_invoice(display_sale(sale), client_p) }, status: :created
 

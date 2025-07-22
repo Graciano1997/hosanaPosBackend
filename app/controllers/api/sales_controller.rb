@@ -4,7 +4,7 @@ class Api::SalesController < ApplicationController
   include Print
   include YearBalance
 
-  before_action :set_sale, only: %i[show update destroy]
+  before_action :set_sale, only: %i[show update destroy reprinting_invoice]
 
   def index
     sales=[]
@@ -44,8 +44,8 @@ class Api::SalesController < ApplicationController
       sale_items.each do |item|
         sale.sale_products << SaleProduct.new(sale_id: sale.id, product_id: item[:id], qty: item[:qty], subtotal: item[:total])
       end
-      
-      render json: { success: true, invoice_item: display_invoice(display_sale(sale), client_p) }, status: :ok
+
+      render json: { success: true, invoice_item: display_invoice(display_sale(sale)) }, status: :ok
 
     else
       if client.save
@@ -55,7 +55,7 @@ class Api::SalesController < ApplicationController
             SaleProduct.create!(sale_id: sale.id, product_id: item[:id], qty: item[:qty], subtotal: item[:total])
           end
 
-          render json: { success: true, invoice_item: display_invoice(display_sale(sale), client_p) }, status: :created
+          render json: { success: true, invoice_item: display_invoice(display_sale(sale)) }, status: :created
 
         else
           render json: { error: true, message: sale.errors.full_messages }, status: :unprocessable_entity
@@ -75,6 +75,10 @@ class Api::SalesController < ApplicationController
     else
       render json: { error: true, message: @sale.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  def reprinting_invoice
+    render json: { success: true, invoice_item: display_invoice(display_sale(@sale)) }, status: :ok
   end
 
   private
@@ -102,7 +106,8 @@ class Api::SalesController < ApplicationController
       received_tpa: sale.received_tpa,
       total: sale.total,
       client_id: sale.client_id,
-      client: sale.client.name ? sale.client.name : "Anônimo",
+      client: sale.client.name ? sale.client.name : "#############",
+      client_phone: sale.client.phone,
       user_id: sale.user_id,
       sale_products: display_sale_products(sale.sale_products),
       operator: User.find(sale.user_id).name,

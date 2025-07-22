@@ -423,18 +423,11 @@ module Print
             system("lpr -P \HP-Deskjet-Plus-4100-series\" \"{file_path}\"")
            end
 
-          # if Gem.win_platform?
-          #   # For Windows, send to default printer by omitting printer name
-          #   system("print \"#{file_path}\"")
-          # else
-          #   # For Unix/Linux, send to default printer using lpr without -P
-          #   system("lpr \"#{file_path}\"")
-          # end
           file_path
     end
     # this method is used to generate and print the invoice, need to be refactored
 
-    def display_invoice(sale, client)
+    def display_invoice(sale)
       products=[]
       company= Company.first
 
@@ -443,7 +436,6 @@ module Print
       end
 
       @invoice_number = sale[:invoice_number]
-
       {
          empresa: company.name,
          nif: company.nif,
@@ -454,7 +446,7 @@ module Print
          dataEmissao: sale[:created_at].utc.strftime("%d-%m-%Y %H:%M:%S"),
          vendedor: sale[:operator],
          troco: sale[:difference].to_s + " kz",
-         telefone: client[:phone],
+         telefone: sale[:client_phone],
          cliente: sale[:client],
          desconto: sale[:descount].to_s + " kz",
          total: sale[:total].to_s + " kz",
@@ -464,6 +456,7 @@ module Print
       }
     end
 
+    # this is a deprecated version of the printing approach and will be removed
     def print(sale, client)
      invoiceObject=File.new("gfatura/fatura.json", "w")
 
@@ -504,4 +497,5 @@ module Print
           end
         end
     end
+  # this is a deprecated version of the printing approach and will be removed
 end
